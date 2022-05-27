@@ -11,7 +11,6 @@ export default class ColumnChart {
     this.element = '';
 
     this.render();
-    this.initEventListeners();
   }
 
 
@@ -63,10 +62,6 @@ export default class ColumnChart {
         value: String(Math.floor(item * scale))
       };
     });
-  }
-
-  initEventListeners() {
-    //
   }
 
   update(newData) {
