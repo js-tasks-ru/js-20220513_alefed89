@@ -1,5 +1,7 @@
 export default class NotificationMessage {
-  constructor(message = 'Hello World', { duration, type } = { duration: 1000, type: 'success' }) {
+  static activeNotification; // позаимствовала из вашего решения
+
+  constructor(message = '', { duration, type } = { duration: 1000, type: 'success' }) {
     this.message = message;
     this.duration = duration; 
     this.type = type;
@@ -8,11 +10,10 @@ export default class NotificationMessage {
   }
 
   getTemplate() {
-    return `
-      <div class="notification" style="--value:${ this.getDuration() }s">
+    return `<div class="notification ${ this.type }" style="--value:${ this.getDuration() }s">
           <div class="timer"></div>
           <div class="inner-wrapper">
-            // <div class="notification-header">Notification</div>
+            <div class="notification-header">Notification</div>
             <div class="notification-body">
               ${ this.message }
             </div>
@@ -26,17 +27,23 @@ export default class NotificationMessage {
   }
 
   render() {
+    const el = document.createElement('div');
+    el.innerHTML = this.getTemplate();
+    this.element = el.firstElementChild;
+
     this.show();
   }
 
-  show(element) {
-    this.element = element ? element : document.createElement('div');
-    this.element.innerHTML = this.getTemplate();
-    this.element.classList.add(this.type);
-    
-    document.body.append(this.element);
+  show(element = document.body) {
+    if (NotificationMessage.activeNotification) {
+      NotificationMessage.activeNotification.remove();
+    }
 
-    return setTimeout(() => this.remove(), this.duration);
+    element.append(this.element);
+
+    setTimeout(() => this.remove(), this.duration);
+
+    NotificationMessage.activeNotification = this;
   }
 
   remove() {
@@ -47,5 +54,7 @@ export default class NotificationMessage {
 
   destroy() {
     this.remove();
+    this.element = null;
+    NotificationMessage.activeNotification = null;
   }
 }
