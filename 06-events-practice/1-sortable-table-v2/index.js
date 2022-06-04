@@ -51,10 +51,6 @@ export default class SortableTable {
     `;
   }
 
-  getImageURL(item) {
-    return item ?? item.images[0].url;
-  }
-
   getHeaderTemplate() {
     const headerTemplate = [];
     let firstSortable = false;
